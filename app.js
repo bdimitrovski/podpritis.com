@@ -39,6 +39,19 @@ const LEADS_ENDPOINT = "https://formspree.io/f/xyznveoo";
   });
 })();
 
+const inputs = document.querySelectorAll('input, select, textarea');
+
+  inputs.forEach(input => {
+    input.addEventListener('focus', () => {
+      setTimeout(() => {
+        input.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }, 300);
+    });
+  });
+
 const toast = document.getElementById('toast');
 function showToast(msg, type='success'){
   toast.textContent = msg;
