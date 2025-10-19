@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="sr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pod pritiskom — pranje dvorišta, fasada i vozila</title>
+  <meta name="description" content="Profesionalno pranje pod pritiskom: dvorišta, fasade, kola i pločnici. Zatražite ponudu — javljamo se brzo.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#top" aria-label="Pod pritiskom — početna">
+        <span class="wordmark">Pod pritiskom</span>
+      </a>
+
+      <!-- Mobile hamburger -->
+      <button class="menu-toggle" aria-label="Meni" aria-controls="site-nav" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+      <nav id="site-nav">
+        <a href="#usluge">Usluge</a>
+        <a href="#rezultati">Pre/posle</a>
+        <a href="#leadForm">Kontakt</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div class="grid">
+          <div>
+            <h1>Čisto <span style="color:var(--cta)">pod pritiskom</span> — dvorišta, fasade, kola</h1>
+            <p class="lead">Premium usluga pranja pod visokim pritiskom u Beogradu. <br />Brza procena, pažljiva zaštita okoline, proverena sredstva.</p>
+          </div>
+          <form class="card form" id="leadForm" autocomplete="on">
+            <h3>Zatraži ponudu</h3>
+            <div class="field"><input type="text" name="name" placeholder="Ime i prezime" required></div>
+            <div class="field"><input type="email" name="email" placeholder="Email" required></div>
+            <div class="field">
+              <select name="service" required>
+                <option value="" disabled selected>Šta ti treba?</option>
+                <option>Pranje dvorišta / pločnika</option>
+                <option>Fasada / terasa</option>
+                <option>Pranje kola</option>
+                <option>Drugo</option>
+              </select>
+            </div>
+            <div class="field"><input type="text" name="city" placeholder="Opština / grad (za dolazak)"></div>
+            <div class="field"><input type="text" name="note" placeholder="Poruka (opciono)"></div>
+            <div class="field" style="padding-top:20px">
+              <button class="cta" type="submit">Zatraži ponudu →</button>
+            </div>
+            <p id="formMsg" class="muted" role="status"></p>
+            <p class="muted">Slanjem prihvataš kontakt samo u vezi ponude.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="usluge">
+      <div class="wrap">
+        <h2>Usluge</h2>
+        <div class="cols">
+          <div class="card tile"><h4>Dvorišta i pločnici</h4><p>Uklanjanje mahovine, fleka i prljavštine.</p></div>
+          <div class="card tile"><h4>Fasade i terase</h4><p>Soft-wash za osetljive površine.</p></div>
+          <div class="card tile"><h4>Vozila</h4><p>Spolja, felne, bezbedno ispiranje podvozja.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section id="rezultati">
+    <div class="wrap">
+      <h2>Pre / posle</h2>
+      <div class="cols">
+        <div class="ba" data-initial="50">
+          <img class="img before dirty" alt="Fasada pre čišćenja" src="https://images.pexels.com/photos/5652626/pexels-photo-5652626.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&fit=crop" />
+          <img class="img after clean" alt="Fasada posle čišćenja" src="https://images.pexels.com/photos/5652626/pexels-photo-5652626.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&fit=crop" />
+          <div class="divider"></div><button class="handle" aria-label="Pomeranje slajdera"></button>
+          <small>pre</small><small class="r">posle</small>
+        </div>
+        <div class="ba" data-initial="50">
+          <img class="img before dirty" alt="Auto pre pranja" src="https://images.pexels.com/photos/4876676/pexels-photo-4876676.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&fit=crop" />
+          <img class="img after clean" alt="Auto posle pranja" src="https://images.pexels.com/photos/4876676/pexels-photo-4876676.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&fit=crop" />
+          <div class="divider"></div><button class="handle" aria-label="Pomeranje slajdera"></button>
+          <small>pre</small><small class="r">posle</small>
+        </div>
+        <div class="ba" data-initial="50">
+          <img class="img before dirty" alt="Ploče pre čišćenja" src="https://images.pexels.com/photos/14965464/pexels-photo-14965464.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&fit=crop" />
+          <img class="img after clean" alt="Ploče posle čišćenja" src="https://images.pexels.com/photos/14965464/pexels-photo-14965464.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&fit=crop" />
+          <div class="divider"></div><button class="handle" aria-label="Pomeranje slajdera"></button>
+          <small>pre</small><small class="r">posle</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <small>© <span id="y"></span> Pod pritiskom — Premium usluge pranja pod visokim pritiskom. 
+      <span class="muted">Email: b.g.dimitrovski@gmail.com</span></small>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
