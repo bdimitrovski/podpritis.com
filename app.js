@@ -39,6 +39,50 @@ const LEADS_ENDPOINT = "https://formspree.io/f/xyznveoo";
   });
 })();
 
+(function () {
+  const el = document.getElementById('rotator');
+  if (!el) return;
+
+  const words = Array.from(el.querySelectorAll('.word'));
+  if (words.length <= 1) return;
+
+  const MODE = 'random';
+  const INTERVAL = 2300;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+
+  const effects = ['rotator--fade', 'rotator--slide', 'rotator--zoom'];
+  let idx = 0, timer;
+
+  function setEffectRandom() {
+    el.classList.remove('rotator--fade', 'rotator--slide', 'rotator--zoom');
+    const pick = effects[Math.floor(Math.random() * effects.length)];
+    el.classList.add(pick);
+  }
+
+  function show(i) {
+    words.forEach((w, j) => w.classList.toggle('is-visible', j === i));
+  }
+
+  function next() {
+    if (MODE === 'random') setEffectRandom();
+
+    const nextIdx = (idx + 1) % words.length;
+    show(nextIdx);
+    idx = nextIdx;
+  }
+
+  if (MODE === 'random') setEffectRandom();
+  show(0);
+  timer = setInterval(next, INTERVAL);
+
+  el.addEventListener('mouseenter', () => clearInterval(timer));
+  el.addEventListener('mouseleave', () => timer = setInterval(next, INTERVAL));
+  el.addEventListener('focusin',   () => clearInterval(timer));
+  el.addEventListener('focusout',  () => timer = setInterval(next, INTERVAL));
+})();
+
 const inputs = document.querySelectorAll('input, select, textarea');
 
   inputs.forEach(input => {
@@ -100,7 +144,7 @@ if(leadForm){
         mode: 'cors'
       });
 
-      if(!res.ok){ throw new Error('Formspree greška ('+res.status+')'); }
+      if(!res.ok){ throw new Error('Greška ('+res.status+')'); }
 
       formMsg.innerHTML = '<span class="ok">Zahvaljujemo na upitu, uskoro ćemo vam se javiti za više detalja.</span>';
       showToast('Zahvaljujemo na upitu, uskoro ćemo vam se javiti za više detalja.', 'success');
@@ -131,3 +175,52 @@ if(leadForm){
 })();
 
 document.getElementById('y').textContent = new Date().getFullYear();
+
+(function () {
+  const wrap = document.getElementById('rotor');
+  if (!wrap) return;
+
+  const pron = wrap.querySelector('.pron');
+  const noun = wrap.querySelector('.noun');
+
+  const items = [
+    { pron: 'tvoje', noun: 'dvorište' },
+    { pron: 'tvoja', noun: 'fasada' },
+    { pron: 'tvoj',  noun: 'auto' },
+  ];
+
+  const effects = ['fade-out', 'slide-out', 'zoom-out']; // random efekti
+  const INTERVAL = 5000;
+  const FADE = 400;
+
+  let i = 0;
+
+  function next() {
+    // izaberi random efekat
+    const effect = effects[Math.floor(Math.random() * effects.length)];
+    wrap.classList.add(effect);
+
+    setTimeout(() => {
+      // promeni reč
+      i = (i + 1) % items.length;
+      pron.textContent = items[i].pron;
+      noun.textContent = items[i].noun;
+
+      // ukloni efekat (fade in)
+      wrap.classList.remove(effect);
+    }, FADE);
+  }
+
+  pron.textContent = items[0].pron;
+  noun.textContent = items[0].noun;
+
+  let timer = setInterval(next, INTERVAL);
+
+  // Pauza na hover/focus
+  const pause = () => clearInterval(timer);
+  const resume = () => (timer = setInterval(next, INTERVAL));
+  wrap.addEventListener('mouseenter', pause);
+  wrap.addEventListener('mouseleave', resume);
+  wrap.addEventListener('focusin', pause);
+  wrap.addEventListener('focusout', resume);
+})();

@@ -1,4 +1,7 @@
-:root{ --ink:#0b1f3a; --cta:#0ea5e9; --cta2:#0284c7; --bg:#f6f9fc; --ok:#16a34a; --danger:#dc2626; --radius:18px; --shadow:0 10px 30px rgba(0,0,0,.08); }
+:root{ --ink:#0b1f3a; --cta:#0ea5e9; --cta2:#0284c7; --bg:#f6f9fc; --ok:#16a34a; --danger:#dc2626; --radius:18px; --shadow:0 10px 30px rgba(0,0,0,.08);  --rotor-speed: 300ms;
+  --rotor-blue: var(--cta);
+  --rotor-black: var(--ink);
+}
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;color:var(--ink);background:var(--bg)}
 a{color:var(--cta); text-decoration:none}
@@ -55,6 +58,27 @@ footer{padding:30px 0;color:#6a7da1}
 /* ===== Mobile nav ===== */
 .menu-toggle{display:none;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;border:1px solid #e5eaf2;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.06);cursor:pointer}
 .menu-toggle svg{width:22px;height:22px}
+
+#rotor.rotor{
+  display:inline-block;
+  vertical-align:baseline;
+  transition: opacity var(--rotor-speed) ease, transform var(--rotor-speed) ease;
+  will-change: opacity, transform;
+}
+#rotor.rotor.leaving{ opacity:0; transform:translateY(0.08em); }
+
+#rotor .pron{ color:var(--rotor-black) !important; } /* crno */
+#rotor .noun{ color:var(--rotor-blue)  !important; } /* plavo */
+.dot{ margin-left:1px; }
+
+@media (prefers-reduced-motion: reduce){
+  #rotor.rotor{ transition:none !important; }
+}
+
+#rotor.fade-out   { opacity: 0; transform: translateY(0.1em); }
+#rotor.slide-out  { opacity: 0; transform: translateX(0.4em); }
+#rotor.zoom-out   { opacity: 0; transform: scale(0.94); }
+
 
 select,
 input,
