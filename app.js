@@ -1,4 +1,3 @@
-
 const LEADS_ENDPOINT = "https://formspree.io/f/xyznveoo";
 
 (function(){
@@ -221,99 +220,169 @@ document.getElementById('y').textContent = new Date().getFullYear();
   wrap.addEventListener('focusout', resume);
 })();
 
-(function(global){
-"use strict";
+(function () {
+  'use strict';
 
+  function init() {
+    const root = document.getElementById('pp-calculator');
+    if (!root) return;
 
-// --- util ---
-function fmt(n){ return new Intl.NumberFormat('sr-RS').format(Math.round(n)); }
-function qs(id){ return document.getElementById(id); }
-function buildMailto(email, subject, body){
-return "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-}
+    // --- config & helpers ---
+    const CONFIG = {
+      baseBySubstrate: {
+        beton:   { min: 120, max: 220 },
+        plocice: { min: 140, max: 260 },
+        kamen:   { min: 180, max: 300 },
+        drugo:   { min: 140, max: 260 }
+      },
+      soilMultiplier:    { 1: 1.00, 2: 1.20, 3: 1.50 },
+      optionsMultiplier: { hot: 1.10, capture: 1.30 },
+      currency: 'RSD',
+      minFeeDefault: 9000
+    };
+    const nf  = new Intl.NumberFormat('sr-RS');
+    const fmt = n => nf.format(Math.round(n));
+    const $   = sel => root.querySelector(sel);
 
+    // --- elements (scoped u #pp-calculator) ---
+    const area   = $('#pp-area');
+    const subs   = $('#pp-substrate');
+    const soil   = $('#pp-soil');
+    const hot    = $('#pp-hot');
+    const cap    = $('#pp-capture');;
+    const minfee = $('#pp-minfee');
+    const city   = $('#pp-city');
 
-const CONFIG = {
-baseBySubstrate:{ beton:{min:120,max:220}, plocice:{min:140,max:260}, kamen:{min:180,max:300}, drugo:{min:140,max:260} },
-soilMultiplier:{1:1.00,2:1.20,3:1.50},
-optionsMultiplier:{hot:1.10,capture:1.30,night:1.20},
-currency:"RSD",
-minFeeDefault:9000
-};
+    const total  = $('#pp-total');
+    const ppsqm  = $('#pp-ppsqm');
+    const assump = $('#pp-assumptions');
 
+    const nameEl   = $('#pp-name');
+    const phoneEl  = $('#pp-phone');
+    const emailEl  = $('#pp-email');
+    const submitBtn= $('#pp-submit');
+    const status   = $('#pp-status');
 
-function currentRange(state){
-const base = CONFIG.baseBySubstrate[state.substrate] || CONFIG.baseBySubstrate.drugo;
-const mult = (CONFIG.soilMultiplier[state.soil]||1) * (state.hot?CONFIG.optionsMultiplier.hot:1) * (state.capture?CONFIG.optionsMultiplier.capture:1) * (state.night?CONFIG.optionsMultiplier.night:1);
-return {low: base.min*mult, high: base.max*mult};
-}
+    function fillSlider() {
+      if (!soil) return;
+      const pct = ((+soil.value - +soil.min) / (+soil.max - +soil.min)) * 100;
+      soil.style.backgroundSize = pct + '% 100%';
+    }
 
+    function currentRange() {
+      const base = CONFIG.baseBySubstrate[subs.value] || CONFIG.baseBySubstrate.drugo;
+      const mult =
+        (CONFIG.soilMultiplier[soil.value] || 1) *
+        (hot.checked   ? CONFIG.optionsMultiplier.hot    : 1) *
+        (cap.checked   ? CONFIG.optionsMultiplier.capture: 1)
+      return { low: base.min * mult, high: base.max * mult };
+    }
 
-function updateSliderFill(el){
-const min = +el.min, max = +el.max, val = +el.value;
-const pct = ((val - min) / (max - min)) * 100;
-el.style.backgroundSize = pct + "% 100%";
-}
+    function recompute() {
+      const a = Math.max(0, Number(area.value) || 0);
+      const r = currentRange();
 
+      let lo = a * r.low;
+      let hi = a * r.high;
+      const minF = Number(minfee.value) || CONFIG.minFeeDefault;
+      lo = Math.max(lo, minF);
+      hi = Math.max(hi, minF);
 
-function init(){
-const root = qs('pp-calculator');
-if(!root){ console.error('[PodpritisCalc] Container not found'); return; }
+      const mid = (lo + hi) / 2;
+      total.textContent = `${fmt(mid)} ${CONFIG.currency}`;
+      ppsqm.textContent =
+        `≈ ${fmt(a ? mid / a : 0)} ${CONFIG.currency}/m² ` +
+        `(raspon: ${fmt(r.low)}–${fmt(r.high)} ${CONFIG.currency}/m²)`;
 
+      const soilMap = { 1: 'normalno', 2: 'teže', 3: 'teško' };
+      const tags = [];
+      if (hot.checked)   tags.push('topla voda');
+      if (cap.checked)   tags.push('hvatanje vode');
+      assump.innerHTML =
+        `Podloga: <b>${subs.options[subs.selectedIndex].text}</b>` +
+        ` · Zaprljanost: <b>${soilMap[soil.value]}</b>` +
+        (tags.length ? ` · Dodatno: <b>${tags.join(', ')}</b>` : '');
 
-const area=qs('pp-area'), substrate=qs('pp-substrate'), soil=qs('pp-soil');
-const hot=qs('pp-hot'), capture=qs('pp-capture'), night=qs('pp-night');
-const minfee=qs('pp-minfee'), total=qs('pp-total'), ppsqm=qs('pp-ppsqm');
-const assumptions=qs('pp-assumptions'), share=qs('pp-share'), city=qs('pp-city');
+      fillSlider();
+      return Math.round(mid);
+    }
 
+    function syncPills() {
+      [hot, cap].forEach(cb => {
+        if (!cb) return;
+        const lab = cb.closest('label');
+        if (lab) lab.classList.toggle('active', cb.checked);
+      });
+    }
 
-const CONTACT_URL = (root.dataset.contactUrl||'').trim() || null;
-const CONTACT_EMAIL = (root.dataset.contactEmail||'info@podpritis.com').trim();
+    function showToast(msg, type) {
+      const zone = document.getElementById('pp-toast');
+      if (!zone) return;
+      const el = document.createElement('div');
+      el.className = 'toast ' + (type || '');
+      el.textContent = msg;
+      zone.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('show'));
+      setTimeout(() => {
+        el.classList.remove('show');
+        setTimeout(() => zone.removeChild(el), 200);
+      }, 3500);
+    }
 
+    async function handleSubmit(e) {
+      e.preventDefault();
+      if (!nameEl.value.trim())  { status.textContent='Unesi ime i prezime';  showToast('Unesi ime i prezime','err');  return; }
+      if (!phoneEl.value.trim()) { status.textContent='Unesi broj telefona';  showToast('Unesi broj telefona','err');  return; }
+      if (!emailEl.value.trim()) { status.textContent='Unesi email';         showToast('Unesi email','err');         return; }
 
-function recompute(){
-const state = {
-area: Math.max(0, Number(area.value)||0),
-substrate: substrate.value,
-soil: soil.value,
-hot: !!hot.checked,
-capture: !!capture.checked,
-night: !!night.checked,
-minfee: Number(minfee.value)||CONFIG.minFeeDefault,
-city: city.value||''
-};
-const range = currentRange(state);
-let estLow = state.area * range.low, estHigh = state.area * range.high;
-estLow = Math.max(estLow, state.minfee); estHigh = Math.max(estHigh, state.minfee);
-const mid = (estLow + estHigh)/2;
-total.textContent = fmt(mid);
-const midPer = state.area>0 ? mid/state.area : 0;
-ppsqm.textContent = `≈ ${fmt(midPer)} ${CONFIG.currency}/m² (raspon: ${fmt(range.low)}–${fmt(range.high)} ${CONFIG.currency}/m²)`;
-const tags = []; if(state.hot) tags.push('topla voda'); if(state.capture) tags.push('hvatanje vode'); if(state.night) tags.push('noćni rad');
-const soilMap={1:'normalno',2:'teže',3:'teško'};
-assumptions.innerHTML = `Podloga: <b>${substrate.options[substrate.selectedIndex].text}</b> · Zaprljanost: <b>${soilMap[state.soil]}</b>${tags.length?` · Dodatno: <b>${tags.join(', ')}</b>`:''}`;
+      const est = recompute();
+      if (submitBtn) submitBtn.disabled = true;
+      status.textContent = 'Šaljem…'; status.className = '';
 
+      const payload = {
+        name: nameEl.value.trim(),
+        phone: phoneEl.value.trim(),
+        email: emailEl.value.trim(),
+        city: city.value.trim(),
+        area: area.value,
+        substrate: subs.value,
+        soil: soil.value,
+        options: { hot: hot.checked, capture: cap.checked },
+        estimate: String(est),
+        minfee: String(minfee.value || CONFIG.minFeeDefault),
+        _subject: 'Upit sa kalkulatora – Podpritis'
+      };
 
-// link
-const params = new URLSearchParams({area:state.area,substrate:state.substrate,soil:state.soil,hot:+state.hot,capture:+state.capture,night:+state.night,estimate:Math.round(mid),city:state.city}).toString();
-if(CONTACT_URL){ share.href = CONTACT_URL + '?' + params; }
-else{
-const subject = `Upit za pranje (${state.city||'lokacija'})`;
-const body = ['Pozdrav,','', 'Želeo bih ponudu za pranje pod pritiskom.','', `Podaci: ${params}`,'','Hvala!'].join('');
-share.href = buildMailto(CONTACT_EMAIL, subject, body);
-}
-updateSliderFill(soil);
-}
+      try {
+        await fetch(root.dataset.formspree, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        status.textContent = 'Hvala! Poslali smo upit.'; status.className = 'ok';
+        showToast('Hvala! Tvoj upit je poslat.', 'ok');
+      } catch (e) {
+        status.textContent = 'Greška pri slanju. Pokušaj ponovo.'; status.className = 'err';
+        showToast('Greška pri slanju. Pokušaj ponovo.', 'err');
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    }
 
+    // event binding
+    ['input','change'].forEach(ev =>
+      [area, subs, soil, hot, cap, minfee, city].forEach(el => el && el.addEventListener(ev, recompute))
+    );
+    [hot, cap].forEach(cb => cb && cb.addEventListener('change', () => { syncPills(); recompute(); }));
+    if (submitBtn) submitBtn.addEventListener('click', handleSubmit);
 
-[area,substrate,soil,hot,capture,night,minfee,city].forEach(el=>{ el.addEventListener('input',recompute); el.addEventListener('change',recompute); });
-recompute();
-}
+    // initial paint
+    fillSlider(); syncPills(); recompute();
+  }
 
-// Safe init on external script load
-if(document.readyState === 'loading'){
-document.addEventListener('DOMContentLoaded', init);
-}else{ init(); }
-
-
-})(window);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

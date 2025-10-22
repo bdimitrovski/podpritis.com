@@ -16,84 +16,19 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="sr_RS">
   <meta property="og:site_name" content="Pod pritiskom">
-  <meta property="og:title" content="Pranje pod pritiskom u Beogradu — dvorišta, fasade i vozila">
-  <meta property="og:description" content="Profesionalno pranje pod pritiskom: dvorišta, fasade, kola i pločnici. Zatražite ponudu — javljamo se brzo.">
+  <meta property="og:title" content="Kalkulator cene pranja pod visokim pritiskom">
+  <meta property="og:description" content="Izračunaj okvirnu cenu pranja pod pritiskom navođenjem kvadrature, materijala i dodatnih opcija.">
   <meta property="og:url" content="https://podpritis.com/">
   <meta property="og:image" content="https://podpritis.com/og-cover.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Pranje pod pritiskom u Beogradu — dvorišta, fasade i vozila">
-  <meta name="twitter:description" content="Premium pranje pod pritiskom u Beogradu. Brza procena i pažljiva zaštita okoline.">
+  <meta name="twitter:title" content="Kalkulator cene pranja pod visokim pritiskom">
+  <meta name="twitter:description" content="Izračunaj okvirnu cenu pranja pod pritiskom navođenjem kvadrature, materijala i dodatnih opcija">
   <meta name="twitter:image" content="https://podpritis.com/og-cover.jpg">
 
   <link rel="stylesheet" href="../style.css">
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "name": "Pod pritiskom",
-        "url": "https://podpritis.com/",
-        "inLanguage": "sr-RS",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://podpritis.com/?q={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
-      },
-      {
-        "@type": "LocalBusiness",
-        "@id": "https://podpritis.com/#biz",
-        "name": "Pod pritiskom",
-        "url": "https://podpritis.com/",
-        "image": "https://podpritis.com/og-cover.jpg",
-        "email": "mailto:b.g.dimitrovski@gmail.com",
-        "areaServed": { "@type": "City", "name": "Beograd" },
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Beograd",
-          "addressCountry": "RS"
-        },
-        "description": "Profesionalna usluga pranja pod pritiskom: dvorišta, fasade, vozila i pločnici.",
-        "priceRange": "$$",
-        "sameAs": []
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Koje površine čistite?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Čistimo dvorišta, pločnike, fasade, terase i vozila. Za osetljive površine primenjujemo soft-wash metod."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Da li radite na teritoriji celog Beograda?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Da, pokrivamo sve beogradske opštine. Navedite lokaciju u formularu kako bismo preciznije procenili ponudu."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Kako da dobijem ponudu?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Popunite kratku formu na sajtu — javimo se brzo sa procenom i terminima."
-            }
-          }
-        ]
-      }
-    ]
-  }
-  </script>
 
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -123,75 +58,81 @@
   </header>
 
 <main class="page">
-    <div>
-        <div class="title">Kalkulator cene pranja po m²</div>
-        <div class="subtitle">Unesi parametre i dobijaš odmah okvirnu procenu i raspon po m².</div>
-
-        <section class="card" id="pp-calculator" data-contact-url="" data-contact-email="info@podpritis.com">
-            <div class="card-body">
-                <div class="grid">
-                    <div class="field">
-                        <label for="pp-area">Površina (m²)</label>
-                        <input type="number" id="pp-area" min="1" step="1" value="120" />
-                    </div>
-                    <div class="field">
-                        <label for="pp-substrate">Tip podloge</label>
-                        <select id="pp-substrate">
-                            <option value="beton">Beton / behaton</option>
-                            <option value="plocice">Pločice / granitna keramika</option>
-                            <option value="kamen">Prirodni kamen</option>
-                            <option value="drugo">Drugo</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>Stepen zaprljanosti</label>
-                        <div class="range">
-                            <span class="pill">Normalno</span>
-                                <input type="range" id="pp-soil" min="1" max="3" step="1" value="1" />
-                            <span class="pill">Jako</span>
-                        </div>
-                    <div class="muted">1 = standardno, 2 = teže (alge/masno), 3 = teško zaprljano</div>
-                    </div>
-                <div class="field">
-                    <label>Dodatne opcije</label>
-                    <div class="range" style="gap:18px;flex-wrap:wrap">
-                        <label class="pill" style="display:flex;align-items:center;gap:8px;padding:8px 10px"><input type="checkbox" id="pp-hot"> Topla voda</label>
-                        <label class="pill" style="display:flex;align-items:center;gap:8px;padding:8px 10px"><input type="checkbox" id="pp-capture"> Hvatanje otpadne vode</label>
-                        <label class="pill" style="display:flex;align-items:center;gap:8px;padding:8px 10px"><input type="checkbox" id="pp-night"> Noćni rad</label>
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="pp-city">Grad / lokacija (opciono)</label>
-                    <input type="text" id="pp-city" placeholder="npr. Beograd, Novi Sad…" />
-                </div>
-                <div class="field">
-                    <label for="pp-minfee">Minimalna izlaznica (RSD)</label>
-                    <input type="number" id="pp-minfee" min="0" step="500" value="9000" />
-                </div>
-            </div>
+<h2 id="pp-hero-title">Kalkulator cene pranja po m²</h2>
+<p id="pp-hero-sub">Unesi parametre i dobijaš odmah okvirnu procenu i raspon po m².</p>
 
 
-            <div class="result">
-                <div class="card">
-                <div class="card-body">
-                <div class="muted">Procena ukupno</div>
-                <div class="price" id="pp-total">— RSD</div>
-                <div class="muted" id="pp-ppsqm">≈ — RSD/m²</div>
-            </div>
-            </div>
-                <div class="card">
-                <div class="card-body">
-                <div class="muted" id="pp-assumptions"></div>
-            </div>
-            </div>
-            </div>
-            <div class="actions">
-            <a class="btn" id="pp-share" href="#" rel="noopener">Zatraži ponudu →</a>
-            <div class="footer-note">Rezultat je okviran. Konačna cena zavisi od stanja podloge, prilaza, vode/struje i termina.</div>
-            </div>
-            </div>
-        </section>
-    </div>
+<section class="wrap" id="pp-calculator" data-formspree="https://formspree.io/f/meorbalz">
+<div class="grid">
+<div class="field">
+<label for="pp-area">Površina (m²)</label>
+<input type="number" id="pp-area" min="1" step="1" value="120" />
+</div>
+<div class="field">
+<label for="pp-substrate">Tip podloge</label>
+<select id="pp-substrate">
+<option value="beton">Beton / behaton</option>
+<option value="plocice">Pločice / granitna keramika</option>
+<option value="kamen">Prirodni kamen</option>
+<option value="drugo">Drugo</option>
+</select>
+</div>
+
+
+<div class="field" style="grid-column:1/-1">
+<label>Stepen zaprljanosti</label>
+<div class="range">
+<span class="pill">Normalno</span>
+<input type="range" id="pp-soil" min="1" max="3" step="1" value="1" />
+<span class="pill">Jako</span>
+</div>
+<div class="muted">1 = standardno, 2 = teže (alge/masno), 3 = teško zaprljano</div>
+</div>
+
+
+<div class="field">
+<label>Dodatne opcije</label>
+<div class="options">
+<label class="opt"><input type="checkbox" id="pp-hot"> Topla voda</label>
+<label class="opt"><input type="checkbox" id="pp-capture"> Hvatanje otpadne vode</label>
+</div>
+</div>
+
+
+<div class="field">
+<label for="pp-minfee">Minimalna izlaznica (RSD)</label>
+<input type="number" id="pp-minfee" min="0" step="500" value="9000" />
+</div>
+</div>
+
+
+<div class="cards">
+<div class="card"><div class="body">
+<div class="muted">Procena ukupno</div>
+<div class="price" id="pp-total">— RSD</div>
+<div class="muted" id="pp-ppsqm">≈ — RSD/m²</div>
+</div></div>
+<div class="card"><div class="body">
+<div class="muted">Odabrane opcije</div>
+<div class="muted" id="pp-assumptions"></div>
+</div></div>
+</div>
+
+<div class="contact">
+<div class="field"><label for="pp-city">Grad / opština</label><input id="pp-city" type="text" placeholder="npr. Beograd, Savski Venac"></div>
+<div class="field"><label for="pp-name">Ime i prezime</label><input id="pp-name" type="text" placeholder="npr. Petar Petrović" required></div>
+<div class="field"><label for="pp-phone">Telefon</label><input id="pp-phone" type="tel" placeholder="npr. +381 60 123 4567" required></div>
+<div class="field" style="grid-column:1/-1"><label for="pp-email">Email</label><input id="pp-email" type="email" placeholder="npr. petar@mail.com" required></div>
+</div>
+
+
+<div class="cta">
+<button class="btn" id="pp-submit" type="button">Zatraži ponudu →</button>
+<div class="note">Cena je okvirna i informativnog je karaktera. Konačna cena zavisi od stanja podloge, prilaza, vode/struje i termina.</div>
+<div id="pp-status" class="muted" role="status" aria-live="polite"></div>
+</div>
+<div id="pp-toast" aria-live="polite"></div>
+</section>
 </main>
 
   <footer>
