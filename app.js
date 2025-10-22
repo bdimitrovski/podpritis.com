@@ -189,24 +189,21 @@ document.getElementById('y').textContent = new Date().getFullYear();
     { pron: 'tvoj',  noun: 'auto' },
   ];
 
-  const effects = ['fade-out', 'slide-out', 'zoom-out']; // random efekti
+  const effects = ['fade-out', 'slide-out', 'zoom-out'];
   const INTERVAL = 5000;
   const FADE = 400;
 
   let i = 0;
 
   function next() {
-    // izaberi random efekat
     const effect = effects[Math.floor(Math.random() * effects.length)];
     wrap.classList.add(effect);
 
     setTimeout(() => {
-      // promeni reč
       i = (i + 1) % items.length;
       pron.textContent = items[i].pron;
       noun.textContent = items[i].noun;
 
-      // ukloni efekat (fade in)
       wrap.classList.remove(effect);
     }, FADE);
   }
@@ -216,7 +213,6 @@ document.getElementById('y').textContent = new Date().getFullYear();
 
   let timer = setInterval(next, INTERVAL);
 
-  // Pauza na hover/focus
   const pause = () => clearInterval(timer);
   const resume = () => (timer = setInterval(next, INTERVAL));
   wrap.addEventListener('mouseenter', pause);
@@ -224,3 +220,100 @@ document.getElementById('y').textContent = new Date().getFullYear();
   wrap.addEventListener('focusin', pause);
   wrap.addEventListener('focusout', resume);
 })();
+
+(function(global){
+"use strict";
+
+
+// --- util ---
+function fmt(n){ return new Intl.NumberFormat('sr-RS').format(Math.round(n)); }
+function qs(id){ return document.getElementById(id); }
+function buildMailto(email, subject, body){
+return "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+}
+
+
+const CONFIG = {
+baseBySubstrate:{ beton:{min:120,max:220}, plocice:{min:140,max:260}, kamen:{min:180,max:300}, drugo:{min:140,max:260} },
+soilMultiplier:{1:1.00,2:1.20,3:1.50},
+optionsMultiplier:{hot:1.10,capture:1.30,night:1.20},
+currency:"RSD",
+minFeeDefault:9000
+};
+
+
+function currentRange(state){
+const base = CONFIG.baseBySubstrate[state.substrate] || CONFIG.baseBySubstrate.drugo;
+const mult = (CONFIG.soilMultiplier[state.soil]||1) * (state.hot?CONFIG.optionsMultiplier.hot:1) * (state.capture?CONFIG.optionsMultiplier.capture:1) * (state.night?CONFIG.optionsMultiplier.night:1);
+return {low: base.min*mult, high: base.max*mult};
+}
+
+
+function updateSliderFill(el){
+const min = +el.min, max = +el.max, val = +el.value;
+const pct = ((val - min) / (max - min)) * 100;
+el.style.backgroundSize = pct + "% 100%";
+}
+
+
+function init(){
+const root = qs('pp-calculator');
+if(!root){ console.error('[PodpritisCalc] Container not found'); return; }
+
+
+const area=qs('pp-area'), substrate=qs('pp-substrate'), soil=qs('pp-soil');
+const hot=qs('pp-hot'), capture=qs('pp-capture'), night=qs('pp-night');
+const minfee=qs('pp-minfee'), total=qs('pp-total'), ppsqm=qs('pp-ppsqm');
+const assumptions=qs('pp-assumptions'), share=qs('pp-share'), city=qs('pp-city');
+
+
+const CONTACT_URL = (root.dataset.contactUrl||'').trim() || null;
+const CONTACT_EMAIL = (root.dataset.contactEmail||'info@podpritis.com').trim();
+
+
+function recompute(){
+const state = {
+area: Math.max(0, Number(area.value)||0),
+substrate: substrate.value,
+soil: soil.value,
+hot: !!hot.checked,
+capture: !!capture.checked,
+night: !!night.checked,
+minfee: Number(minfee.value)||CONFIG.minFeeDefault,
+city: city.value||''
+};
+const range = currentRange(state);
+let estLow = state.area * range.low, estHigh = state.area * range.high;
+estLow = Math.max(estLow, state.minfee); estHigh = Math.max(estHigh, state.minfee);
+const mid = (estLow + estHigh)/2;
+total.textContent = fmt(mid);
+const midPer = state.area>0 ? mid/state.area : 0;
+ppsqm.textContent = `≈ ${fmt(midPer)} ${CONFIG.currency}/m² (raspon: ${fmt(range.low)}–${fmt(range.high)} ${CONFIG.currency}/m²)`;
+const tags = []; if(state.hot) tags.push('topla voda'); if(state.capture) tags.push('hvatanje vode'); if(state.night) tags.push('noćni rad');
+const soilMap={1:'normalno',2:'teže',3:'teško'};
+assumptions.innerHTML = `Podloga: <b>${substrate.options[substrate.selectedIndex].text}</b> · Zaprljanost: <b>${soilMap[state.soil]}</b>${tags.length?` · Dodatno: <b>${tags.join(', ')}</b>`:''}`;
+
+
+// link
+const params = new URLSearchParams({area:state.area,substrate:state.substrate,soil:state.soil,hot:+state.hot,capture:+state.capture,night:+state.night,estimate:Math.round(mid),city:state.city}).toString();
+if(CONTACT_URL){ share.href = CONTACT_URL + '?' + params; }
+else{
+const subject = `Upit za pranje (${state.city||'lokacija'})`;
+const body = ['Pozdrav,','', 'Želeo bih ponudu za pranje pod pritiskom.','', `Podaci: ${params}`,'','Hvala!'].join('');
+share.href = buildMailto(CONTACT_EMAIL, subject, body);
+}
+updateSliderFill(soil);
+}
+
+
+[area,substrate,soil,hot,capture,night,minfee,city].forEach(el=>{ el.addEventListener('input',recompute); el.addEventListener('change',recompute); });
+recompute();
+}
+
+// Safe init on external script load
+if(document.readyState === 'loading'){
+document.addEventListener('DOMContentLoaded', init);
+}else{ init(); }
+
+
+})(window);

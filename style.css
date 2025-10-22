@@ -115,3 +115,67 @@ select {
   background:rgba(9,16,29,.35);
 }
 }
+
+:root{
+--bg:#f8fafc; --card:#ffffff; --text:#0f172a; --muted:#64748b; --border:#e5e7eb; --accent:#0ea5e9;
+--shadow:0 14px 40px rgba(2,6,23,.08); --radius:18px; --track-bg:#e2e8f0; --thumb-size:22px; --track-fill:#38bdf8; --track-h:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,"Noto Sans",sans-serif;background:var(--bg);color:var(--text)}
+a{color:var(--accent);text-decoration:none}
+
+
+.page{max-width:1000px;margin-inline:auto;padding:28px 20px 60px}
+.header{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.title{font-weight:800;letter-spacing:.2px;font-size:clamp(22px,3.2vw,32px)}
+.subtitle{margin-bottom: 20px; color:var(--muted);font-size:clamp(14px,1.6vw,16px)}
+
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card-body{padding:22px}
+
+
+.grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:920px){.grid{grid-template-columns:repeat(2,1fr)}}
+
+
+.field{display:flex;flex-direction:column;gap:6px}
+label{font-size:13px;color:var(--muted)}
+input[type="text"],input[type="email"],input[type="tel"],input[type="number"],select{appearance:auto;width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;color:inherit;outline:none;font:inherit}
+input:focus,select:focus{border-color:color-mix(in srgb,var(--accent) 55%,white);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%, transparent)}
+
+
+/* BEAUTIFIED RANGE (slider) – izgled kao na screenshotu, sa popunjenim delom i belim obrubom oko thumb-a */
+.range{display:flex;align-items:center;gap:12px}
+.pill{font-size:12px;border:1px solid var(--border);padding:4px 8px;border-radius:999px;color:var(--muted);white-space:nowrap}
+
+
+input[type="range"]{ -webkit-appearance:none;appearance:none;width:100%;height:var(--track-h);border-radius:999px;cursor:pointer;outline:none;
+background: linear-gradient(var(--track-fill), var(--track-fill)) no-repeat, var(--track-bg);
+background-size: 0% 100%;
+box-shadow: inset 0 0 0 2px #dbe3ec; /* svetla ivica oko trake */
+transition: background-size .15s ease;
+}
+input[type="range"]:focus{ box-shadow: 0 0 0 4px rgba(56,189,248,.25), inset 0 0 0 2px #dbe3ec; }
+/* WebKit */
+input[type="range"]::-webkit-slider-thumb{ -webkit-appearance:none;width:var(--thumb-size);height:var(--thumb-size);border-radius:50%;background:var(--track-fill);border:4px solid #fff; box-shadow:0 2px 8px rgba(2,6,23,.18); margin-top: calc((var(--thumb-size) - var(--track-h)) / -2); }}
+input[type="range"]::-webkit-slider-runnable-track{ height:var(--track-h); border-radius:999px; background:transparent }
+/* Firefox */
+input[type="range"]::-moz-range-thumb{ width:var(--thumb-size);height:var(--thumb-size);border-radius:50%;background:var(--track-fill);border:4px solid #fff; box-shadow:0 2px 8px rgba(2,6,23,.18) }
+input[type="range"]::-moz-range-track{ height:var(--track-h); border-radius:999px; background:transparent }
+
+
+.result{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
+@media(min-width:920px){.result{grid-template-columns:1fr 1fr}}
+.price{font-size:clamp(26px,3.5vw,34px);font-weight:800}
+.muted{color:var(--muted);font-size:13px}
+
+
+.actions{margin-top:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:1px solid color-mix(in srgb,var(--accent) 70%, black);padding:12px 16px;border-radius:12px;font-weight:700}
+.btn[disabled]{opacity:.6;cursor:not-allowed}
+.btn:hover{filter:brightness(1.04)}
+.footer-note{margin-top:8px;color:var(--muted);font-size:12px}
+.status{font-size:13px}
+.ok{color:#16a34a}.err{color:#dc2626}
